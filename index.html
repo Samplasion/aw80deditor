@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"-->
+    <link rel="stylesheet" href="https://bootswatch.com//4/darkly/bootstrap.css" media="screen">
+
+    <title>Around the World in 80 Days Level Editor</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="langs.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark"
+        style="background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);">
+        <a class="navbar-brand" href="#">
+            <script>document.write(__("Around the World in 80 Days Level Editor (AW80DLE for short)"))</script></a>
+        </button>
+    </nav><br>
+    <div id="page-container">
+        <div class="container">
+            <div id="fileselection">
+                <label for="fileinput">
+                    <script>document.write(__("Choose the <code>level.xml</code> file located in <code>&lt;GameDir>/Base</code>"))</script>
+                    &nbsp;&nbsp;&nbsp;&nbsp;</label>
+                <button type="button" class="btn btn-primary btn-sm" onclick="document.querySelector('#fileinput').click()">
+                    <script>document.write(__("Browse"))</script></button>
+                <input type="file" id="fileinput" visbility="hidden" style="display:none" accept=".xml">
+            </div>
+    
+            <div id="editor" style="display:none">
+                <b>
+                    <script>document.write(__("Level"))</script>: </b> <select style="width: 50%" name="level" id="level"
+                    onchange="selectLevel()" onfocus="this.selectedIndex = 0;">
+    
+                </select>
+    
+                <div class="row">
+                    <div class="col-4">
+                        <div id="layout" style="display:none"></div>
+                        <div class="btn-group" style="width: 100%;margin-top: 10px;" role="group"
+                            aria-label="Save or clear">
+                            <button id="save" type="button" class="btn btn-warning btn-sm" data-toggle="modal"
+                                data-target="#mayCorruptWarningModal">
+                                <script>document.write(__("Save file"))</script></button>
+                            <button id="clear" type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                                data-target="#clearWarningModal">
+                                <script>document.write(__("Clear level"))</script></button>
+                        </div>
+                    </div>
+                    <div class="col-3"><fieldset>
+                        <legend>
+                            <script>document.write(__("Grid size"))</script>
+                        </legend>
+                        <div id="grid" style="display:none">
+                            <script>document.write(__("{0} grid").replace("{0}", '<input type="number" onchange="onRowOrColNoChange()" style="width: 50px;" id="rows" min="3"\
+                                max="11" />&times;<input onchange="onRowOrColNoChange()" type="number" style="width: 50px;"\
+                                id="cols" min="3" max="11" />'))</script>
+                        </div></fieldset>
+                        <fieldset>
+                            <legend>
+                            <script>document.write(__("Level Info"))</script>
+                        </legend>
+    
+                        <div id="artifacts"></div></fieldset>
+    
+                        <div id="time">
+                            <fieldset><legend>
+                                <script>document.write(__("Level Time"))</script>
+                            </legend>
+                            <p>
+                                <script>document.write(__("The level's time (in seconds). The hour hand of the level's clock (the one on the left) will take exactly this time / 5 to go to the next \"hour\" (eg if the time is set to 60, the hour hand will switch to the next hour every 5 seconds)."))</script>
+                            </p>
+    
+                            <script>document.write(__("{0} seconds").replace("{0}", '<input type="number" onchange="timeChange(this.value)" style="width: 100px;" id="timeInput"\
+                                min="60" max="3600" />'))</script></fieldset>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div id="chipset">
+                            <form action="#" method="post" class="demoForm" id="demoForm">
+    
+                                <fieldset>
+                                    <legend>
+                                        <script>document.write(__("Chips"))</script>
+                                    </legend>
+    
+                                    <p>
+                                        <script>document.write(__("Check a minimum of 3 of these or the game will freeze."))</script>
+                                    </p>
+    
+                                    <p id="checkboxes">
+    
+                                    </p>
+    
+                                </fieldset>
+    
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <table>
+                            <thead>
+                                <th style="width: 60px">
+                                    <script>document.write(__("Letter"))</script>
+                                </th>
+                                <th style="width: 60px">
+                                    <script>document.write(__("Icon"))</script>
+                                </th>
+                                <th>
+                                    <script>document.write(__("Meaning"))</script>
+                                </th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>0</td>
+                                    <td></td>
+                                    <td>
+                                        <script>document.write(__("Empty slot"))</script>
+                                    </td>
+                                </tr>
+    
+                                <tr>
+                                    <td>1</td>
+                                    <td><img src="assets/chip_1.png" alt="0" width="20px" height="20px"></td>
+                                    <td>
+                                        <script>document.write(__("Chip"))</script>
+                                    </td>
+                                </tr>
+    
+                                <tr>
+                                    <td>A</td>
+                                    <td><img src="assets/chip_A.png" alt="0" width="20px" height="20px"></td>
+                                    <td>
+                                        <script>document.write(__("Artifact piece"))</script>
+                                    </td>
+                                </tr>
+    
+                                <tr>
+                                    <td>V</td>
+                                    <td><img src="assets/chip_V.png" alt="0" width="20px" height="20px"></td>
+                                    <td>
+                                        <script>document.write(__("New Life"))</script>
+                                    </td>
+                                </tr>
+    
+                                <tr>
+                                    <td>S</td>
+                                    <td><img src="assets/chip_S.png" alt="0" width="20px" height="20px"></td>
+                                    <td>
+                                        <script>document.write(__("Points"))</script>
+                                    </td>
+                                </tr>
+    
+                                <tr>
+                                    <td>Z</td>
+                                    <td><img src="assets/chip_Z.png" alt="0" width="20px" height="20px"></td>
+                                    <td>
+                                        <script>document.write(__("Single-frozen chip"))</script>
+                                    </td>
+                                </tr>
+    
+                                <tr>
+                                    <td>X</td>
+                                    <td><img src="assets/chip_X.png" alt="0" width="20px" height="20px"></td>
+                                    <td>
+                                        <script>document.write(__("Double-frozen chip"))</script>
+                                    </td>
+                                </tr>
+    
+                                <tr>
+                                    <td>T</td>
+                                    <td><img src="assets/chip_T.png" alt="0" width="20px" height="20px"></td>
+                                    <td>
+                                        <script>document.write(__("Hourglass"))</script>
+                                    </td>
+                                </tr>
+    
+                                <tr>
+                                    <td>-</td>
+                                    <td><img src="assets/chip_-.png" alt="0" width="20px" height="20px"></td>
+                                    <td>
+                                        <script>document.write(__("Single-locked chip"))</script>
+                                    </td>
+                                </tr>
+    
+                                <tr>
+                                    <td>+</td>
+                                    <td><img src="assets/chip_+.png" alt="0" width="20px" height="20px"></td>
+                                    <td>
+                                        <script>document.write(__("Double-locked chip"))</script>
+                                    </td>
+                                </tr>
+    
+                                <tr>
+                                    <td>*</td>
+                                    <td><img src="assets/chip_W.png" alt="0" width="20px" height="20px"></td>
+                                    <td>
+                                        <script>document.write(__("Hard Wall"))</script>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Footer -->
+        <footer id="footer" class="page-footer font-small text-white" style="background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);">
+    
+            <!-- Copyright -->
+            <div class="footer-copyright text-center py-3">Around the World in 80 Days Level Editor © 2020 Samplasion
+            </div>
+            <!-- Copyright -->
+    
+        </footer>
+        <!-- Footer -->
+    </div>
+
+    <!-- =========== MODALS =========== -->
+    <div class="modal fade" id="mayCorruptWarningModal" tabindex="-1" role="dialog"
+        aria-labelledby="mayCorruptWarningModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mayCorruptWarningModalLabel">
+                        <script>document.write(__("Warning"))</script>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <script>document.write(__("There is a chance the game won't start or it'll freeze when loading a modified level. Download the modified file?"))</script>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <script>document.write(__("Cancel"))</script></button>
+                    <button type="button" onclick="save()" class="btn btn-danger">
+                        <script>document.write(__("Save"))</script></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="clearWarningModal" tabindex="-1" role="dialog" aria-labelledby="clearWarningModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="clearWarningModalLabel">
+                        <script>document.write(__("Warning"))</script>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <script>document.write(__("This will clear your current level (ie. set all the cells to 0). This action can't be undone. Are you sure you want to clear this level?"))</script>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <script>document.write(__("Cancel"))</script></button>
+                    <button type="button" onclick="clearLevel()" class="btn btn-danger">
+                        <script>document.write(__("Clear"))</script></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
